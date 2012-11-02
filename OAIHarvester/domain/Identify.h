@@ -1,10 +1,10 @@
-//
-//  Identify.h
-//  OAIHarvesterExample
-//
-//  Created by Kostas Stamatis on 11/2/12.
-//  Copyright (c) 2012 Kostas Stamatis. All rights reserved.
-//
+/*********************************************************************************************
+ 
+ This work is licensed under the Creative Commons Attribution-ShareAlike 3.0 Unported License.
+ 
+ To view a copy of this license, visit http://creativecommons.org/licenses/by-sa/3.0/.
+ 
+**********************************************************************************************/
 
 #import <Foundation/Foundation.h>
 
