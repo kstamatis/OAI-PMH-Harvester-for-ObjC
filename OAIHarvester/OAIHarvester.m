@@ -13,16 +13,33 @@
 - (void) checkResponseForError:(CXMLElement *)oaiPmhElement withError:(NSError **)error;
 
 @end
-    
+
 
 @implementation OAIHarvester
 
 @synthesize metadataPrefix, setSpec, baseURL, resumptionToken;
+@synthesize identify;
+
+#pragma mark - Initialization Methods
+- (id) initWithBaseURL:(NSString *)theBaseURL{
+    if (self = [super init]){
+        
+        self.baseURL = theBaseURL;
+        
+    }
+    return self;
+}
+
+#pragma mark - Error Checking
+- (void) setBaseURL:(NSString *)theBaseURL {
+    baseURL = [theBaseURL retain];
+    [self identifyWithError:nil];
+}
 
 #pragma mark - Error Checking
 - (void) checkResponseForError:(CXMLElement *)oaiPmhElement withError:(NSError **)error{
-    NSDictionary *namespaceMappings = [NSDictionary dictionaryWithObject:@"http://www.openarchives.org/OAI/2.0/" forKey:@"oai-pmh"];
-
+    NSDictionary *namespaceMappings = [NSDictionary dictionaryWithObject:BASE_NAMESPACE forKey:@"oai-pmh"];
+    
     NSError *err = nil;
     NSArray *errors = [oaiPmhElement nodesForXPath:@"//oai-pmh:error" namespaceMappings:namespaceMappings error:&err];
     if (!err && [errors count]>0){
@@ -68,7 +85,7 @@
                 return nil;
             }
             
-            NSDictionary *namespaceMappings = [NSDictionary dictionaryWithObject:@"http://www.openarchives.org/OAI/2.0/" forKey:@"oai-pmh"];
+            NSDictionary *namespaceMappings = [NSDictionary dictionaryWithObject:BASE_NAMESPACE forKey:@"oai-pmh"];
             NSArray *records = [oaiPmhElement nodesForXPath:@"//oai-pmh:record" namespaceMappings:namespaceMappings error:error];
             NSMutableArray *results = [[NSMutableArray alloc] init];
             for (CXMLElement *recordNode in records){
@@ -86,6 +103,50 @@
     return nil;
 }
 
+- (Identify *)identifyWithError:(NSError **)error{
+    
+    if (!baseURL){
+        *error = [HarvesterError errorWithDomain:@"harvester.client.error.nobaseurl" code:0 userInfo:nil];
+        return nil;
+    }
+    
+    NSURL *url = [NSURL URLWithString:[NSString stringWithFormat:@"%@?verb=Identify",baseURL]];
+    NSMutableURLRequest *request = [NSMutableURLRequest requestWithURL:url];
+    [request setHTTPMethod:@"GET"];
+    
+    NSURLResponse *response;
+    
+    NSError *err = nil;
+    NSData *responseData = [NSURLConnection sendSynchronousRequest:request returningResponse:&response error:&err];
+    if (!err){
+        CXMLDocument *document = [[[CXMLDocument alloc] initWithData:responseData options:0 error:&err] autorelease];
+        if (!err){
+            CXMLElement *oaiPmhElement = [document rootElement];
+            
+            [self checkResponseForError:oaiPmhElement withError:&err];
+            if (err){
+                *error = err;
+                return nil;
+            }
+            
+            NSDictionary *namespaceMappings = [NSDictionary dictionaryWithObject:BASE_NAMESPACE forKey:@"oai-pmh"];
+            NSArray *indentifyArray = [oaiPmhElement nodesForXPath:@"//oai-pmh:Identify" namespaceMappings:namespaceMappings error:error];
+            
+            CXMLElement *identifyNode = [indentifyArray objectAtIndex:0];
+            
+            Identify *identify2 = [[Identify alloc] initWithXMLElement:identifyNode];
+            
+            self.identify = identify2;
+            
+            return [identify2 autorelease];
+        }
+        *error = err;
+        return nil;
+    }
+    *error = err;
+    return nil;
+}
+
 #pragma mark - Memory Management
 - (void) dealloc {
     
@@ -94,6 +155,8 @@
     [setSpec release];
     
     [resumptionToken release];
+    
+    [identify release];
     
     [super dealloc];
 }

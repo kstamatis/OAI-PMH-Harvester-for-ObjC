@@ -7,6 +7,7 @@
 **********************************************************************************************/
 
 #import "RecordHeader.h"
+#import "OAIHarvester.h"
 
 @implementation RecordHeader
 
@@ -17,7 +18,7 @@
     if (self = [super init]){
 
         //Identifier
-        NSArray *identifierNodes = [headerXMLElement  elementsForLocalName:@"identifier" URI:@"http://www.openarchives.org/OAI/2.0/"];
+        NSArray *identifierNodes = [headerXMLElement  elementsForLocalName:@"identifier" URI:BASE_NAMESPACE];
         if ([identifierNodes count]>0)
             self.identifier = [[identifierNodes objectAtIndex:0] stringValue];
         else
@@ -31,7 +32,7 @@
             self.status = NO_STATUS;
         
         //setSpecs
-        NSArray *setNodes = [headerXMLElement  elementsForLocalName:@"setSpec" URI:@"http://www.openarchives.org/OAI/2.0/"];
+        NSArray *setNodes = [headerXMLElement  elementsForLocalName:@"setSpec" URI:BASE_NAMESPACE];
         if ([setNodes count]>0) {
             self.setSpecs = [[[NSMutableArray alloc] initWithCapacity:[setNodes count]] autorelease];
             for (CXMLNode *node in setNodes){
@@ -43,7 +44,7 @@
         }
         
         //datestamp
-        NSArray *dateNodes = [headerXMLElement  elementsForLocalName:@"datestamp" URI:@"http://www.openarchives.org/OAI/2.0/"];
+        NSArray *dateNodes = [headerXMLElement  elementsForLocalName:@"datestamp" URI:BASE_NAMESPACE];
         if ([dateNodes count]>0) {
             self.datestamp = [[dateNodes objectAtIndex:0] stringValue];
         }

@@ -7,6 +7,7 @@
 **********************************************************************************************/
 
 #import "Record.h"
+#import "OAIHarvester.h"
 
 @implementation Record
 
@@ -15,8 +16,14 @@
 #pragma mark - Initialization Methods
 - (id) initWithXMLElement:(CXMLElement *)recordXMLElement{
     if (self = [super init]){
-        CXMLElement *headerElement = [[recordXMLElement elementsForLocalName:@"header" URI:@"http://www.openarchives.org/OAI/2.0/"] objectAtIndex:0];
-        CXMLElement *metadataElement = [[recordXMLElement elementsForLocalName:@"metadata" URI:@"http://www.openarchives.org/OAI/2.0/"] objectAtIndex:0];
+        CXMLElement *headerElement = nil;
+        NSArray *headerArray = [recordXMLElement elementsForLocalName:@"header" URI:BASE_NAMESPACE];
+        if ([headerArray count]>0)
+            headerElement = [headerArray objectAtIndex:0];
+        CXMLElement *metadataElement = nil;
+        NSArray *metadataArray = [recordXMLElement elementsForLocalName:@"metadata" URI:BASE_NAMESPACE];
+        if ([metadataArray count]>0)
+            metadataElement = [metadataArray objectAtIndex:0];
         self.recordMetadata = [[[RecordMetadata alloc] initWithXMLElement:metadataElement] autorelease];
         self.recordHeader = [[[RecordHeader alloc] initWithXMLElement:headerElement] autorelease];
     }
