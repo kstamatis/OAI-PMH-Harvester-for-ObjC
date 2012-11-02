@@ -18,7 +18,7 @@
 @implementation OAIHarvester
 
 @synthesize metadataPrefix, setSpec, baseURL, resumptionToken;
-@synthesize identify;
+@synthesize identify, metadataFormats;
 
 #pragma mark - Initialization Methods
 - (id) initWithBaseURL:(NSString *)theBaseURL{
@@ -34,6 +34,7 @@
 - (void) setBaseURL:(NSString *)theBaseURL {
     baseURL = [theBaseURL retain];
     [self identifyWithError:nil];
+    [self listMetadataFormatsWithError:nil];
 }
 
 #pragma mark - Error Checking
@@ -53,7 +54,7 @@
     }
 }
 
-#pragma mark - ListRecords
+#pragma mark - Verbs
 - (NSArray *)listRecordsWithError:(NSError **)error{
     
     if (!baseURL){
@@ -147,6 +148,65 @@
     return nil;
 }
 
+- (NSArray *)listMetadataFormatsWithError:(NSError **)error {
+    
+    return [self listMetadataFormatsForItem:nil error:error];
+}
+
+- (NSArray *)listMetadataFormatsForItem:(NSString *)itemIdentifier error:(NSError **)error {
+    if (!baseURL){
+        *error = [HarvesterError errorWithDomain:@"harvester.client.error.nobaseurl" code:0 userInfo:nil];
+        return nil;
+    }
+    
+    NSURL *url;
+    
+    if (!itemIdentifier)
+        url = [NSURL URLWithString:[NSString stringWithFormat:@"%@?verb=ListMetadataFormats",baseURL]];
+    else
+        url = [NSURL URLWithString:[NSString stringWithFormat:@"%@?verb=ListMetadataFormats&identifier=%@",baseURL, itemIdentifier]];
+    
+    NSMutableURLRequest *request = [NSMutableURLRequest requestWithURL:url];
+    [request setHTTPMethod:@"GET"];
+    
+    NSURLResponse *response;
+    
+    NSError *err = nil;
+    NSData *responseData = [NSURLConnection sendSynchronousRequest:request returningResponse:&response error:&err];
+    if (!err){
+        CXMLDocument *document = [[[CXMLDocument alloc] initWithData:responseData options:0 error:&err] autorelease];
+        if (!err){
+            CXMLElement *oaiPmhElement = [document rootElement];
+            
+            [self checkResponseForError:oaiPmhElement withError:&err];
+            if (err){
+                *error = err;
+                return nil;
+            }
+            
+            NSDictionary *namespaceMappings = [NSDictionary dictionaryWithObject:BASE_NAMESPACE forKey:@"oai-pmh"];
+            NSArray *formatArray = [oaiPmhElement nodesForXPath:@"//oai-pmh:metadataFormat" namespaceMappings:namespaceMappings error:error];
+            
+            NSMutableArray *results = [[NSMutableArray alloc] init];
+            for (CXMLElement *formatElement in formatArray){
+                MetadataFormat *format = [[MetadataFormat alloc] initWithXMLElement:formatElement];
+                [results addObject:format];
+                [format release];
+            }
+            
+            if (!itemIdentifier)
+                self.metadataFormats = results;
+            
+            return [results autorelease];
+        }
+        *error = err;
+        return nil;
+    }
+    *error = err;
+    return nil;
+}
+
+
 #pragma mark - Memory Management
 - (void) dealloc {
     
@@ -157,6 +217,7 @@
     [resumptionToken release];
     
     [identify release];
+    [metadataFormats release];
     
     [super dealloc];
 }

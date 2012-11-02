@@ -9,6 +9,7 @@
 #import <Foundation/Foundation.h>
 #import "Record.h"
 #import "Identify.h"
+#import "MetadataFormat.h"
 #import "HarvesterError.h"
 
 #define BASE_NAMESPACE @"http://www.openarchives.org/OAI/2.0/"
@@ -22,6 +23,7 @@
     NSString *resumptionToken;
     
     Identify *identify;
+    NSArray *metadataFormats;
 }
 
 @property (nonatomic, retain) NSString *baseURL;
@@ -31,12 +33,15 @@
 @property (nonatomic, retain) NSString *resumptionToken;
 
 @property (nonatomic, retain) Identify *identify;
+@property (nonatomic, retain) NSArray *metadataFormats;
 
 #pragma mark - Initialization Methods
 - (id) initWithBaseURL:(NSString *)theBaseURL;
 
 #pragma mark - ListRecords
 - (Identify *)identifyWithError:(NSError **)error;
+- (NSArray *)listMetadataFormatsWithError:(NSError **)error;
+- (NSArray *)listMetadataFormatsForItem:(NSString *)itemIdentifier error:(NSError **)error;
 - (NSArray *)listRecordsWithError:(NSError **)error;
 
 @end
