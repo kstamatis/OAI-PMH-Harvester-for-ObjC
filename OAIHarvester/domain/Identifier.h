@@ -8,19 +8,13 @@
 
 #import <Foundation/Foundation.h>
 
-@interface ResumptionToken : NSObject {
-    
-    NSString *expireDate;
-    NSString *token;
-    int completeListSize;
-    int cursor;
-    
+@interface Identifier : NSObject {
+    NSString *identifier;
+    NSString *datestamp;
 }
 
-@property (nonatomic, retain) NSString *expireDate;
-@property (nonatomic, retain) NSString *token;
-@property (nonatomic, assign) int completeListSize;
-@property (nonatomic, assign) int cursor;
+@property (nonatomic, retain) NSString *identifier;
+@property (nonatomic, retain) NSString *datestamp;
 
 #pragma mark Initialization Methods
 - (id) initWithXMLElement:(CXMLElement *)xmlElement;

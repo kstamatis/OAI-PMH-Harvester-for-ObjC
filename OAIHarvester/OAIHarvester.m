@@ -12,6 +12,7 @@
 
 - (void) checkResponseForError:(CXMLElement *)oaiPmhElement withError:(NSError **)error;
 - (NSArray *)listRecordsWithResumptionToken:(NSString *)resumptionTkn fetchAll:(BOOL)fetchAll error:(NSError **)error;
+- (NSArray *)listIdentifiersWithResumptionToken:(NSString *)resumptionTkn fetchAll:(BOOL)fetchAll error:(NSError **)error;
 
 @end
 
@@ -26,9 +27,11 @@
     if (self = [super init]){
         
         self.resumptionToken = nil;
+        self.identifiersResumptionToken = nil;
         self.identify = nil;
         self.metadataFormats = nil;
         self.sets = nil;
+        self.identifiers = nil;
     }
     return self;
 }
@@ -37,9 +40,11 @@
     if (self = [super init]){
         
         self.resumptionToken = nil;
+        self.identifiersResumptionToken = nil;
         self.identify = nil;
         self.metadataFormats = nil;
         self.sets = nil;
+        self.identifiers = nil;
         
         self.baseURL = theBaseURL;
         
@@ -73,6 +78,7 @@
 }
 
 #pragma mark - Verbs
+#pragma mark ListRecords
 - (BOOL) hasNextRecords {
     if (self.resumptionToken){
         return YES;
@@ -164,7 +170,12 @@
             }
             
             if (fetchAll && self.resumptionToken){
-                [results addObjectsFromArray:[self listRecordsWithResumptionToken:self.resumptionToken.token fetchAll:fetchAll error:error]];
+                NSArray *tmp = [self listRecordsWithResumptionToken:self.resumptionToken.token fetchAll:fetchAll error:error];
+                if (error){
+                    return nil;
+                }
+                
+                [results addObjectsFromArray:tmp];
             }
             
             //if (self.records){
@@ -182,6 +193,123 @@
     return nil;
 }
 
+#pragma mark ListIdentifiers
+- (BOOL) hasNextIdentifiers {
+    if (self.identifiersResumptionToken){
+        return YES;
+    }
+    
+    return NO;
+}
+
+- (NSArray *) getNextIdentifiersWithError:(NSError **)error {
+    if (self.identifiersResumptionToken){
+        return [self listIdentifiersWithResumptionToken:self.identifiersResumptionToken.token error:error];
+    }
+    
+    return [self listIdentifiersWithResumptionToken:nil error:error];
+}
+
+- (NSArray *)listAllIdentifiersWithError:(NSError **)error{
+    return [self listIdentifiersWithResumptionToken:nil fetchAll:YES error:error];
+}
+
+- (NSArray *)listIdentifiersWithResumptionToken:(NSString *)resumptionTkn error:(NSError **)error{
+    return [self listIdentifiersWithResumptionToken:resumptionTkn fetchAll:NO error:error];
+}
+
+- (NSArray *)listIdentifiersWithResumptionToken:(NSString *)resumptionTkn fetchAll:(BOOL)fetchAll error:(NSError **)error{
+    
+    if (!baseURL){
+        *error = [HarvesterError errorWithDomain:@"harvester.client.error.nobaseurl" code:0 userInfo:nil];
+        return nil;
+    }
+    
+    if (!metadataPrefix){
+        *error = [HarvesterError errorWithDomain:@"harvester.client.error.nometadataprefix" code:0 userInfo:nil];
+        return nil;
+    }
+    
+    NSURL *url;
+    
+    if (!resumptionTkn)
+        url = [NSURL URLWithString:[NSString stringWithFormat:@"%@?verb=ListIdentifiers&metadataPrefix=%@",baseURL, metadataPrefix]];
+    else
+        url = [NSURL URLWithString:[NSString stringWithFormat:@"%@?verb=ListIdentifiers&resumptionToken=%@",baseURL, resumptionTkn]];
+    
+    NSMutableURLRequest *request = [NSMutableURLRequest requestWithURL:url];
+    [request setHTTPMethod:@"GET"];
+    
+    NSURLResponse *response;
+    
+    NSError *err = nil;
+    NSData *responseData = [NSURLConnection sendSynchronousRequest:request returningResponse:&response error:&err];
+    if (!err){
+        CXMLDocument *document = [[[CXMLDocument alloc] initWithData:responseData options:0 error:&err] autorelease];
+        if (!err){
+            CXMLElement *oaiPmhElement = [document rootElement];
+            
+            [self checkResponseForError:oaiPmhElement withError:&err];
+            if (err){
+                *error = err;
+                return nil;
+            }
+            
+            NSDictionary *namespaceMappings = [NSDictionary dictionaryWithObject:BASE_NAMESPACE forKey:@"oai-pmh"];
+            
+            NSArray *resumptionTokens = [oaiPmhElement nodesForXPath:@"//oai-pmh:resumptionToken" namespaceMappings:namespaceMappings error:error];
+            if ([resumptionTokens count] > 0){
+                NSString *token = [[resumptionTokens objectAtIndex:0] stringValue];
+                if (!token || [token isEqualToString:@""]){
+                    self.identifiersResumptionToken = nil;
+                }
+                else {
+                    //if (self.resumptionToken){
+                    //    [self.resumptionToken release];
+                    //    self.resumptionToken = nil;
+                    //}
+                    self.identifiersResumptionToken = [[[ResumptionToken alloc] initWithXMLElement:[resumptionTokens objectAtIndex:0]] autorelease];
+                    NSLog(@"Indentifiers Token: %@", self.identifiersResumptionToken.token);
+                }
+            }
+            else {
+                self.identifiersResumptionToken = nil;
+            }
+            
+            NSArray *identifiers2 = [oaiPmhElement nodesForXPath:@"//oai-pmh:header" namespaceMappings:namespaceMappings error:error];
+            NSMutableArray *results = [[NSMutableArray alloc] init];
+            for (CXMLElement *recordNode in identifiers2){
+                Identifier *identifier = [[Identifier alloc] initWithXMLElement:recordNode];
+                [results addObject:identifier];
+                [identifier release];
+            }
+            
+            if (fetchAll && self.identifiersResumptionToken){
+                NSArray *tmp = [self listIdentifiersWithResumptionToken:self.identifiersResumptionToken.token fetchAll:fetchAll error:error];
+                if (error){
+                    return nil;
+                }
+                
+                [results addObjectsFromArray:tmp];
+            }
+            
+            //if (self.records){
+            //    [self.records release];
+            //    self.records = nil;
+            //}
+            self.identifiers = results;
+            
+            return [results autorelease];
+        }
+        *error = err;
+        return nil;
+    }
+    *error = err;
+    return nil;
+}
+
+
+#pragma mark Identify
 - (Identify *)identifyWithError:(NSError **)error{
     
     if (!baseURL){
@@ -230,6 +358,7 @@
     return nil;
 }
 
+#pragma mark ListMetadataFormats
 - (NSArray *)listMetadataFormatsWithError:(NSError **)error {
     
     return [self listMetadataFormatsForItem:nil error:error];
@@ -293,6 +422,7 @@
     return nil;
 }
 
+#pragma mark ListSets
 - (NSArray *)listSetsWithError:(NSError **)error {
     if (!baseURL){
         *error = [HarvesterError errorWithDomain:@"harvester.client.error.nobaseurl" code:0 userInfo:nil];

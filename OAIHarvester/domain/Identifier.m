@@ -6,22 +6,19 @@
  
 **********************************************************************************************/
 
-#import "ResumptionToken.h"
+#import "Identifier.h"
 
-@implementation ResumptionToken
+@implementation Identifier
 
-@synthesize token, expireDate, completeListSize, cursor;
+@synthesize identifier, datestamp;
 
 #pragma mark Initialization Methods
 - (id) initWithXMLElement:(CXMLElement *)xmlElement{
     if (self = [super init]){
         
-        self.token = [xmlElement stringValue];
-        self.expireDate = [[xmlElement attributeForName:@"expirationDate"] stringValue];
-        self.cursor = [[[xmlElement attributeForName:@"cursor"] stringValue] intValue];
-        self.completeListSize = [[[xmlElement attributeForName:@"completeListSize"] stringValue] intValue];
-     
-        NSLog(@"");
+        self.identifier = [[[xmlElement elementsForLocalName:@"identifier" URI:BASE_NAMESPACE] objectAtIndex:0] stringValue];
+        self.datestamp = [[[xmlElement elementsForLocalName:@"datestamp" URI:BASE_NAMESPACE] objectAtIndex:0] stringValue];
+        
     }
     return self;
 }
@@ -29,8 +26,8 @@
 #pragma mark - Memory Management
 - (void) dealloc {
     
-    [token release];
-    [expireDate release];
+    [identifier release];
+    [datestamp release];
     
     [super dealloc];
 }

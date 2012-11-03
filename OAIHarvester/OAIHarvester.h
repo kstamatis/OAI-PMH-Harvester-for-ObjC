@@ -13,7 +13,10 @@
 #import "MetadataFormat.h"
 #import "Set.h"
 #import "ResumptionToken.h"
+#import "Identifier.h"
 #import "HarvesterError.h"
+
+#define BASE_NAMESPACE @"http://www.openarchives.org/OAI/2.0/"
 
 @interface OAIHarvester : NSObject {
     
@@ -22,11 +25,13 @@
     NSString *metadataPrefix;
     
     ResumptionToken *resumptionToken;
+    ResumptionToken *identifiersResumptionToken;
     
     Identify *identify;
     NSArray *metadataFormats;
     NSArray *sets;
     NSArray *records;
+    NSArray *identifiers;
     
 }
 
@@ -35,23 +40,34 @@
 @property (nonatomic, retain) NSString *metadataPrefix;
 
 @property (nonatomic, retain) ResumptionToken *resumptionToken;
+@property (nonatomic, retain) ResumptionToken *identifiersResumptionToken;
 
 @property (nonatomic, retain) Identify *identify;
 @property (nonatomic, retain) NSArray *metadataFormats;
 @property (nonatomic, retain) NSArray *sets;
 @property (nonatomic, retain) NSArray *records;
+@property (nonatomic, retain) NSArray *identifiers;
 
 #pragma mark - Initialization Methods
 - (id) initWithBaseURL:(NSString *)theBaseURL;
 
 #pragma mark - Verbs
+#pragma mark Identify
 - (Identify *)identifyWithError:(NSError **)error;
+#pragma mark ListMetadataFormats
 - (NSArray *)listMetadataFormatsWithError:(NSError **)error;
 - (NSArray *)listMetadataFormatsForItem:(NSString *)itemIdentifier error:(NSError **)error;
+#pragma mark ListSets
 - (NSArray *)listSetsWithError:(NSError **)error;
+#pragma mark ListRecords
 - (NSArray *)listAllRecordsWithError:(NSError **)error;
 - (NSArray *)listRecordsWithResumptionToken:(NSString *)resumptionTkn error:(NSError **)error;
 - (BOOL) hasNextRecords;
 - (NSArray *) getNextRecordsWithError:(NSError **)error;
+#pragma mark ListIdentifiers
+- (NSArray *)listAllIdentifiersWithError:(NSError **)error;
+- (NSArray *)listIdentifiersWithResumptionToken:(NSString *)resumptionTkn error:(NSError **)error;
+- (BOOL) hasNextIdentifiers;
+- (NSArray *) getNextIdentifiersWithError:(NSError **)error;
 
 @end
