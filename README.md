@@ -5,7 +5,7 @@ OAI-PMH-Harvester-for-ObjC
 
 Introduction
 ------------
-OAI-PMH Objective-C harvester is an Objective C wrapper over the OAI-PMH protocol (http://www.openarchives.org/OAI/openarchivesprotocol.html)
+OAI-PMH Objective-C harvester is an Objective C library/wrapper over the <a href="http://www.openarchives.org/OAI/openarchivesprotocol.html">OAI-PMH protocol</a>
 
 Installation
 ------------
@@ -14,7 +14,7 @@ Since this is an ongoing work, no installation instructions can be given until t
 Limitations
 -----------
 - The following OAI verbs are not yet supported: <i>GetRecord</i>, <i>ListIdentifiers</i>
-- No support for resumption tokens in the following verbs: <i>ListSets</i>, <i>ListRecords</i>
+- No support for resumption tokens in the following verbs: <i>ListSets</i>
 - No support for the "description" element in <i>Identify</i> verb
 - No support for the "about" element in <i>ListRecords</i> verb
 
