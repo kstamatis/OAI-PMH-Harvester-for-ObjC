@@ -15,7 +15,6 @@ Limitations
 -----------
 - No validation of the incoming xml
 - No support for resumption tokens in the following verbs: <i>ListSets</i>
-- No support for the "set" argument in <i>ListRecords</i> and </i>ListIdentifiers</i> verbs
 - No support for date selective harvesting for the verbs: <i>ListIdentifiers</i> and <i>ListRecords</i>
 - No support for the "description" element in <i>Identify</i> verb
 - No support for the "about" element in <i>ListRecords</i> verb
