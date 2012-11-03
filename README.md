@@ -14,7 +14,6 @@ Since this is an ongoing work, no installation instructions can be given until t
 Limitations
 -----------
 - No validation of the incoming xml
-- The following OAI verbs are not yet supported: <i>GetRecord</i>, <i>ListIdentifiers</i>
 - No support for resumption tokens in the following verbs: <i>ListSets</i>
 - No support for the "set" argument in <i>ListRecords</i> and </i>ListIdentifiers</i> verbs
 - No support for date selective harvesting for the verbs: <i>ListIdentifiers</i> and <i>ListRecords</i>

@@ -20,14 +20,14 @@ typedef enum
     NSString *datestamp;
     NSMutableArray *setSpecs;
     
-    int status;
+    RECORD_STATUS status;
     
 }
 
 @property (nonatomic, retain) NSString *identifier;
 @property (nonatomic, retain) NSString *datestamp;
 @property (nonatomic, retain) NSMutableArray *setSpecs;
-@property (nonatomic, assign) int status;
+@property (nonatomic, assign) RECORD_STATUS status;
 
 #pragma mark - Initialization Methods
 - (id) initWithXMLElement:(CXMLElement *)headerXMLElement;

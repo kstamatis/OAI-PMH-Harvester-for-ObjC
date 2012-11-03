@@ -69,5 +69,7 @@
 - (NSArray *)listIdentifiersWithResumptionToken:(NSString *)resumptionTkn error:(NSError **)error;
 - (BOOL) hasNextIdentifiers;
 - (NSArray *) getNextIdentifiersWithError:(NSError **)error;
+#pragma mark GetRecord
+- (Record *)getRecordWithIdentifier:(NSString *)identifier error:(NSError **)error;
 
 @end

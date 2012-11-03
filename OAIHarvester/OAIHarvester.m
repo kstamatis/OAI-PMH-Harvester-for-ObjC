@@ -476,6 +476,57 @@
     return nil;
 }
 
+#pragma mark GetRecord
+- (Record *)getRecordWithIdentifier:(NSString *)identifier error:(NSError **)error{
+    
+    if (!baseURL){
+        *error = [HarvesterError errorWithDomain:@"harvester.client.error.nobaseurl" code:0 userInfo:nil];
+        return nil;
+    }
+    
+    if (!metadataPrefix){
+        *error = [HarvesterError errorWithDomain:@"harvester.client.error.nometadataprefix" code:0 userInfo:nil];
+        return nil;
+    }
+    
+    NSURL *url;
+    
+    url = [NSURL URLWithString:[NSString stringWithFormat:@"%@?verb=ListRecords&metadataPrefix=%@",baseURL, metadataPrefix]];
+    
+    NSMutableURLRequest *request = [NSMutableURLRequest requestWithURL:url];
+    [request setHTTPMethod:@"GET"];
+    
+    NSURLResponse *response;
+    
+    NSError *err = nil;
+    NSData *responseData = [NSURLConnection sendSynchronousRequest:request returningResponse:&response error:&err];
+    if (!err){
+        CXMLDocument *document = [[[CXMLDocument alloc] initWithData:responseData options:0 error:&err] autorelease];
+        if (!err){
+            CXMLElement *oaiPmhElement = [document rootElement];
+            
+            [self checkResponseForError:oaiPmhElement withError:&err];
+            if (err){
+                *error = err;
+                return nil;
+            }
+            
+            NSDictionary *namespaceMappings = [NSDictionary dictionaryWithObject:BASE_NAMESPACE forKey:@"oai-pmh"];
+            
+            NSArray *records2 = [oaiPmhElement nodesForXPath:@"//oai-pmh:record" namespaceMappings:namespaceMappings error:error];
+            
+            for (CXMLElement *recordNode in records2){
+                Record *record = [[Record alloc] initWithXMLElement:recordNode];
+                return [record autorelease];
+            }
+        }
+        *error = err;
+        return nil;
+    }
+    *error = err;
+    return nil;
+}
+
 #pragma mark - Memory Management
 - (void) dealloc {
     
