@@ -143,10 +143,10 @@
                     self.resumptionToken = nil;
                 }
                 else {
-                    if (self.resumptionToken){
-                        [self.resumptionToken release];
-                        self.resumptionToken = nil;
-                    }
+                    //if (self.resumptionToken){
+                    //    [self.resumptionToken release];
+                    //    self.resumptionToken = nil;
+                    //}
                     self.resumptionToken = [[[ResumptionToken alloc] initWithXMLElement:[resumptionTokens objectAtIndex:0]] autorelease];
                     NSLog(@"Token: %@", self.resumptionToken.token);
                 }
@@ -167,10 +167,10 @@
                 [results addObjectsFromArray:[self listRecordsWithResumptionToken:self.resumptionToken.token fetchAll:fetchAll error:error]];
             }
             
-            if (self.records){
-                [self.records release];
-                self.records = nil;
-            }
+            //if (self.records){
+            //    [self.records release];
+            //    self.records = nil;
+            //}
             self.records = results;
             
             return [results autorelease];
