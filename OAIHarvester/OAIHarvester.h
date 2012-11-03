@@ -10,6 +10,7 @@
 #import "Record.h"
 #import "Identify.h"
 #import "MetadataFormat.h"
+#import "Set.h"
 #import "HarvesterError.h"
 
 #define BASE_NAMESPACE @"http://www.openarchives.org/OAI/2.0/"
@@ -24,6 +25,8 @@
     
     Identify *identify;
     NSArray *metadataFormats;
+    NSArray *sets;
+    
 }
 
 @property (nonatomic, retain) NSString *baseURL;
@@ -34,6 +37,7 @@
 
 @property (nonatomic, retain) Identify *identify;
 @property (nonatomic, retain) NSArray *metadataFormats;
+@property (nonatomic, retain) NSArray *sets;
 
 #pragma mark - Initialization Methods
 - (id) initWithBaseURL:(NSString *)theBaseURL;
@@ -42,6 +46,7 @@
 - (Identify *)identifyWithError:(NSError **)error;
 - (NSArray *)listMetadataFormatsWithError:(NSError **)error;
 - (NSArray *)listMetadataFormatsForItem:(NSString *)itemIdentifier error:(NSError **)error;
+- (NSArray *)listSetsWithError:(NSError **)error;
 - (NSArray *)listRecordsWithError:(NSError **)error;
 
 @end

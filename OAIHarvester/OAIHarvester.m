@@ -18,11 +18,15 @@
 @implementation OAIHarvester
 
 @synthesize metadataPrefix, setSpec, baseURL, resumptionToken;
-@synthesize identify, metadataFormats;
+@synthesize identify, metadataFormats, sets;
 
 #pragma mark - Initialization Methods
 - (id) initWithBaseURL:(NSString *)theBaseURL{
     if (self = [super init]){
+        
+        self.identify = nil;
+        self.metadataFormats = nil;
+        self.sets = nil;
         
         self.baseURL = theBaseURL;
         
@@ -30,11 +34,12 @@
     return self;
 }
 
-#pragma mark - Error Checking
+#pragma mark - Setters
 - (void) setBaseURL:(NSString *)theBaseURL {
     baseURL = [theBaseURL retain];
     [self identifyWithError:nil];
     [self listMetadataFormatsWithError:nil];
+    [self listSetsWithError:nil];
 }
 
 #pragma mark - Error Checking
@@ -137,6 +142,10 @@
             
             Identify *identify2 = [[Identify alloc] initWithXMLElement:identifyNode];
             
+            if (self.identify){
+                [self.identify release];
+                self.identify = nil;
+            }
             self.identify = identify2;
             
             return [identify2 autorelease];
@@ -194,8 +203,13 @@
                 [format release];
             }
             
-            if (!itemIdentifier)
+            if (!itemIdentifier){
+                if (self.metadataFormats){
+                    [self.metadataFormats release];
+                    self.metadataFormats = nil;
+                }
                 self.metadataFormats = results;
+            }
             
             return [results autorelease];
         }
@@ -206,6 +220,58 @@
     return nil;
 }
 
+- (NSArray *)listSetsWithError:(NSError **)error {
+    if (!baseURL){
+        *error = [HarvesterError errorWithDomain:@"harvester.client.error.nobaseurl" code:0 userInfo:nil];
+        return nil;
+    }
+    
+    NSURL *url;
+    
+    url = [NSURL URLWithString:[NSString stringWithFormat:@"%@?verb=ListSets",baseURL]];
+    
+    NSMutableURLRequest *request = [NSMutableURLRequest requestWithURL:url];
+    [request setHTTPMethod:@"GET"];
+    
+    NSURLResponse *response;
+    
+    NSError *err = nil;
+    NSData *responseData = [NSURLConnection sendSynchronousRequest:request returningResponse:&response error:&err];
+    if (!err){
+        CXMLDocument *document = [[[CXMLDocument alloc] initWithData:responseData options:0 error:&err] autorelease];
+        if (!err){
+            CXMLElement *oaiPmhElement = [document rootElement];
+            
+            [self checkResponseForError:oaiPmhElement withError:&err];
+            if (err){
+                *error = err;
+                return nil;
+            }
+            
+            NSDictionary *namespaceMappings = [NSDictionary dictionaryWithObject:BASE_NAMESPACE forKey:@"oai-pmh"];
+            NSArray *formatArray = [oaiPmhElement nodesForXPath:@"//oai-pmh:set" namespaceMappings:namespaceMappings error:error];
+            
+            NSMutableArray *allSets = [[NSMutableArray alloc] init];
+            for (CXMLElement *setElement in formatArray){
+                Set *set = [[Set alloc] initWithXMLElement:setElement];
+                [allSets addObject:set];
+                [set release];
+            }
+            
+            if (self.sets){
+                [self.sets release];
+                self.sets = nil;
+            }
+            self.sets = allSets;
+            
+            return [allSets autorelease];
+        }
+        *error = err;
+        return nil;
+    }
+    *error = err;
+    return nil;
+}
 
 #pragma mark - Memory Management
 - (void) dealloc {
@@ -218,6 +284,7 @@
     
     [identify release];
     [metadataFormats release];
+    [sets release];
     
     [super dealloc];
 }

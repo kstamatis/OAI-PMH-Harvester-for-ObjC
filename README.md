@@ -11,11 +11,21 @@ Installation
 ------------
 Since this is an ongoing work, no installation instructions can be given until the project ends.
 
+Limitations
+-----------
+- The following OAI verbs are not yet supported: <i>GetRecord</i>, <i>ListIdentifiers</i>
+- No support for resumption tokens in the following verbs: <i>ListSets</i>, <i>ListRecords</i>
+- No support for the "description" element in <i>Identify</i> verb
+- No support for the "about" element in <i>ListRecords</i> verb
+
+Dependencies
+------------
+The only dependency of this project is the <a href="https://github.com/TouchCode/TouchXML">TouchXML</a> library that can be found <a href="https://github.com/TouchCode/TouchXML">here</a>.
+
 Author
 ------------
 
-Kostas Stamatis
-
+Kostas Stamatis<br/>
 National Documentation Center / NHRF
 
 Licence
