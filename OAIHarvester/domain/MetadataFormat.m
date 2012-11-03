@@ -7,7 +7,6 @@
 **********************************************************************************************/
 
 #import "MetadataFormat.h"
-#import "OAIHarvester.h"
 
 @implementation MetadataFormat
 

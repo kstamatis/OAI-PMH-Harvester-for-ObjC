@@ -4,13 +4,14 @@
  
  To view a copy of this license, visit http://creativecommons.org/licenses/by-sa/3.0/.
  
- **********************************************************************************************/
+**********************************************************************************************/
 
 #import "OAIHarvester.h"
 
 @interface OAIHarvester ()
 
 - (void) checkResponseForError:(CXMLElement *)oaiPmhElement withError:(NSError **)error;
+- (NSArray *)listRecordsWithResumptionToken:(NSString *)resumptionTkn fetchAll:(BOOL)fetchAll error:(NSError **)error;
 
 @end
 
@@ -18,12 +19,24 @@
 @implementation OAIHarvester
 
 @synthesize metadataPrefix, setSpec, baseURL, resumptionToken;
-@synthesize identify, metadataFormats, sets;
+@synthesize identify, metadataFormats, sets, records;
 
 #pragma mark - Initialization Methods
+- (id) init{
+    if (self = [super init]){
+        
+        self.resumptionToken = nil;
+        self.identify = nil;
+        self.metadataFormats = nil;
+        self.sets = nil;
+    }
+    return self;
+}
+
 - (id) initWithBaseURL:(NSString *)theBaseURL{
     if (self = [super init]){
         
+        self.resumptionToken = nil;
         self.identify = nil;
         self.metadataFormats = nil;
         self.sets = nil;
@@ -60,7 +73,31 @@
 }
 
 #pragma mark - Verbs
-- (NSArray *)listRecordsWithError:(NSError **)error{
+- (BOOL) hasNextRecords {
+    if (self.resumptionToken){
+        return YES;
+    }
+    
+    return NO;
+}
+
+- (NSArray *) getNextRecordsWithError:(NSError **)error {
+    if (self.resumptionToken){
+        return [self listRecordsWithResumptionToken:self.resumptionToken.token error:error];
+    }
+    
+    return [self listRecordsWithResumptionToken:nil error:error];
+}
+
+- (NSArray *)listAllRecordsWithError:(NSError **)error{
+    return [self listRecordsWithResumptionToken:nil fetchAll:YES error:error];
+}
+
+- (NSArray *)listRecordsWithResumptionToken:(NSString *)resumptionTkn error:(NSError **)error{
+    return [self listRecordsWithResumptionToken:resumptionTkn fetchAll:NO error:error];
+}
+
+- (NSArray *)listRecordsWithResumptionToken:(NSString *)resumptionTkn fetchAll:(BOOL)fetchAll error:(NSError **)error{
     
     if (!baseURL){
         *error = [HarvesterError errorWithDomain:@"harvester.client.error.nobaseurl" code:0 userInfo:nil];
@@ -72,7 +109,13 @@
         return nil;
     }
     
-    NSURL *url = [NSURL URLWithString:[NSString stringWithFormat:@"%@?verb=ListRecords&metadataPrefix=%@",baseURL, metadataPrefix]];
+    NSURL *url;
+    
+    if (!resumptionTkn)
+        url = [NSURL URLWithString:[NSString stringWithFormat:@"%@?verb=ListRecords&metadataPrefix=%@",baseURL, metadataPrefix]];
+    else
+        url = [NSURL URLWithString:[NSString stringWithFormat:@"%@?verb=ListRecords&resumptionToken=%@",baseURL, resumptionTkn]];
+    
     NSMutableURLRequest *request = [NSMutableURLRequest requestWithURL:url];
     [request setHTTPMethod:@"GET"];
     
@@ -92,13 +135,43 @@
             }
             
             NSDictionary *namespaceMappings = [NSDictionary dictionaryWithObject:BASE_NAMESPACE forKey:@"oai-pmh"];
-            NSArray *records = [oaiPmhElement nodesForXPath:@"//oai-pmh:record" namespaceMappings:namespaceMappings error:error];
+            
+            NSArray *resumptionTokens = [oaiPmhElement nodesForXPath:@"//oai-pmh:resumptionToken" namespaceMappings:namespaceMappings error:error];
+            if ([resumptionTokens count] > 0){
+                NSString *token = [[resumptionTokens objectAtIndex:0] stringValue];
+                if (!token || [token isEqualToString:@""]){
+                    self.resumptionToken = nil;
+                }
+                else {
+                    if (self.resumptionToken){
+                        [self.resumptionToken release];
+                        self.resumptionToken = nil;
+                    }
+                    self.resumptionToken = [[[ResumptionToken alloc] initWithXMLElement:[resumptionTokens objectAtIndex:0]] autorelease];
+                    NSLog(@"Token: %@", self.resumptionToken.token);
+                }
+            }
+            else {
+                self.resumptionToken = nil;
+            }
+            
+            NSArray *records2 = [oaiPmhElement nodesForXPath:@"//oai-pmh:record" namespaceMappings:namespaceMappings error:error];
             NSMutableArray *results = [[NSMutableArray alloc] init];
-            for (CXMLElement *recordNode in records){
+            for (CXMLElement *recordNode in records2){
                 Record *record = [[Record alloc] initWithXMLElement:recordNode];
                 [results addObject:record];
                 [record release];
             }
+            
+            if (fetchAll && self.resumptionToken){
+                [results addObjectsFromArray:[self listRecordsWithResumptionToken:self.resumptionToken.token fetchAll:fetchAll error:error]];
+            }
+            
+            if (self.records){
+                [self.records release];
+                self.records = nil;
+            }
+            self.records = results;
             
             return [results autorelease];
         }
@@ -285,6 +358,7 @@
     [identify release];
     [metadataFormats release];
     [sets release];
+    [records release];
     
     [super dealloc];
 }

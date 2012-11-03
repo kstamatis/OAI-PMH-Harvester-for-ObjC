@@ -7,6 +7,10 @@
 	objects = {
 
 /* Begin PBXBuildFile section */
+		5225988A16454ADC007E6097 /* Identify.m in Sources */ = {isa = PBXBuildFile; fileRef = 5225988916454ADC007E6097 /* Identify.m */; };
+		5225988E16454AEB007E6097 /* MetadataFormat.m in Sources */ = {isa = PBXBuildFile; fileRef = 5225988D16454AEB007E6097 /* MetadataFormat.m */; };
+		5225989116454B07007E6097 /* Set.m in Sources */ = {isa = PBXBuildFile; fileRef = 5225989016454B07007E6097 /* Set.m */; };
+		5225989416454B1F007E6097 /* ResumptionToken.m in Sources */ = {isa = PBXBuildFile; fileRef = 5225989316454B1F007E6097 /* ResumptionToken.m */; };
 		5272911B1642D1760020F38D /* Foundation.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 5272911A1642D1760020F38D /* Foundation.framework */; };
 		527291201642D1760020F38D /* OAIHarvester.h in CopyFiles */ = {isa = PBXBuildFile; fileRef = 5272911F1642D1760020F38D /* OAIHarvester.h */; };
 		527291221642D1760020F38D /* OAIHarvester.m in Sources */ = {isa = PBXBuildFile; fileRef = 527291211642D1760020F38D /* OAIHarvester.m */; };
@@ -45,6 +49,14 @@
 /* End PBXCopyFilesBuildPhase section */
 
 /* Begin PBXFileReference section */
+		5225988816454ADC007E6097 /* Identify.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = Identify.h; sourceTree = "<group>"; };
+		5225988916454ADC007E6097 /* Identify.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = Identify.m; sourceTree = "<group>"; };
+		5225988C16454AEB007E6097 /* MetadataFormat.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = MetadataFormat.h; sourceTree = "<group>"; };
+		5225988D16454AEB007E6097 /* MetadataFormat.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = MetadataFormat.m; sourceTree = "<group>"; };
+		5225988F16454B07007E6097 /* Set.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = Set.h; sourceTree = "<group>"; };
+		5225989016454B07007E6097 /* Set.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = Set.m; sourceTree = "<group>"; };
+		5225989216454B1F007E6097 /* ResumptionToken.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = ResumptionToken.h; sourceTree = "<group>"; };
+		5225989316454B1F007E6097 /* ResumptionToken.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = ResumptionToken.m; sourceTree = "<group>"; };
 		527291171642D1760020F38D /* libOAIHarvester.a */ = {isa = PBXFileReference; explicitFileType = archive.ar; includeInIndex = 0; path = libOAIHarvester.a; sourceTree = BUILT_PRODUCTS_DIR; };
 		5272911A1642D1760020F38D /* Foundation.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = Foundation.framework; path = System/Library/Frameworks/Foundation.framework; sourceTree = SDKROOT; };
 		5272911E1642D1760020F38D /* OAIHarvester-Prefix.pch */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; path = "OAIHarvester-Prefix.pch"; sourceTree = "<group>"; };
@@ -163,6 +175,14 @@
 				52729244164332F10020F38D /* MetadataElement.m */,
 				52729245164332F10020F38D /* RecordHeader.h */,
 				52729246164332F10020F38D /* RecordHeader.m */,
+				5225988816454ADC007E6097 /* Identify.h */,
+				5225988916454ADC007E6097 /* Identify.m */,
+				5225988C16454AEB007E6097 /* MetadataFormat.h */,
+				5225988D16454AEB007E6097 /* MetadataFormat.m */,
+				5225988F16454B07007E6097 /* Set.h */,
+				5225989016454B07007E6097 /* Set.m */,
+				5225989216454B1F007E6097 /* ResumptionToken.h */,
+				5225989316454B1F007E6097 /* ResumptionToken.m */,
 			);
 			path = domain;
 			sourceTree = "<group>";
@@ -312,6 +332,10 @@
 				52729242164332D40020F38D /* HarvesterError.m in Sources */,
 				52729247164332F10020F38D /* MetadataElement.m in Sources */,
 				52729248164332F10020F38D /* RecordHeader.m in Sources */,
+				5225988A16454ADC007E6097 /* Identify.m in Sources */,
+				5225988E16454AEB007E6097 /* MetadataFormat.m in Sources */,
+				5225989116454B07007E6097 /* Set.m in Sources */,
+				5225989416454B1F007E6097 /* ResumptionToken.m in Sources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};

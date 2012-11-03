@@ -7,6 +7,7 @@
 **********************************************************************************************/
 
 #import "MetadataElement.h"
+#import "OAIHarvester.h"
 
 @implementation MetadataElement
 

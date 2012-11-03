@@ -10,7 +10,7 @@
 
 typedef enum
 {
-    NO_STATUS = 0,
+    NO_STATUS,
 	STATUS_DELETED
 } RECORD_STATUS;
 
@@ -20,14 +20,14 @@ typedef enum
     NSString *datestamp;
     NSMutableArray *setSpecs;
     
-    RECORD_STATUS status;
+    int status;
     
 }
 
 @property (nonatomic, retain) NSString *identifier;
 @property (nonatomic, retain) NSString *datestamp;
 @property (nonatomic, retain) NSMutableArray *setSpecs;
-@property (nonatomic, assign) RECORD_STATUS status;
+@property (nonatomic, assign) int status;
 
 #pragma mark - Initialization Methods
 - (id) initWithXMLElement:(CXMLElement *)headerXMLElement;

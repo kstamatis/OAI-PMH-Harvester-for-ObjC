@@ -7,7 +7,6 @@
 **********************************************************************************************/
 
 #import "RecordHeader.h"
-#import "OAIHarvester.h"
 
 @implementation RecordHeader
 

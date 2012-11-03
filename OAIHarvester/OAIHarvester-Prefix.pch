@@ -7,4 +7,6 @@
 
     #import "TouchXML.h"
 
+    #define BASE_NAMESPACE @"http://www.openarchives.org/OAI/2.0/"
+
 #endif
