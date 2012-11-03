@@ -27,6 +27,7 @@
     if (self = [super init]){
         
         self.resumptionToken = nil;
+        self.setSpec = nil;
         self.identifiersResumptionToken = nil;
         self.identify = nil;
         self.metadataFormats = nil;
@@ -40,6 +41,7 @@
     if (self = [super init]){
         
         self.resumptionToken = nil;
+        self.setSpec = nil;
         self.identifiersResumptionToken = nil;
         self.identify = nil;
         self.metadataFormats = nil;
@@ -117,8 +119,14 @@
     
     NSURL *url;
     
-    if (!resumptionTkn)
-        url = [NSURL URLWithString:[NSString stringWithFormat:@"%@?verb=ListRecords&metadataPrefix=%@",baseURL, metadataPrefix]];
+    if (!resumptionTkn){
+        if (setSpec) {
+            url = [NSURL URLWithString:[NSString stringWithFormat:@"%@?verb=ListRecords&metadataPrefix=%@&setSpec=%@",baseURL, metadataPrefix, setSpec]];
+        }
+        else {
+            url = [NSURL URLWithString:[NSString stringWithFormat:@"%@?verb=ListRecords&metadataPrefix=%@",baseURL, metadataPrefix]];
+        }
+    }
     else
         url = [NSURL URLWithString:[NSString stringWithFormat:@"%@?verb=ListRecords&resumptionToken=%@",baseURL, resumptionTkn]];
     
@@ -232,8 +240,14 @@
     
     NSURL *url;
     
-    if (!resumptionTkn)
-        url = [NSURL URLWithString:[NSString stringWithFormat:@"%@?verb=ListIdentifiers&metadataPrefix=%@",baseURL, metadataPrefix]];
+    if (!resumptionTkn){
+        if (setSpec) {
+            url = [NSURL URLWithString:[NSString stringWithFormat:@"%@?verb=ListIdentifiers&metadataPrefix=%@&setSpec=%@",baseURL, metadataPrefix, setSpec]];
+        }
+        else {
+            url = [NSURL URLWithString:[NSString stringWithFormat:@"%@?verb=ListIdentifiers&metadataPrefix=%@",baseURL, metadataPrefix]];
+        }
+    }
     else
         url = [NSURL URLWithString:[NSString stringWithFormat:@"%@?verb=ListIdentifiers&resumptionToken=%@",baseURL, resumptionTkn]];
     
