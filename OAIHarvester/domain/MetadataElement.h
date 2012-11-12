@@ -13,12 +13,13 @@
     NSString *name;
     NSString *value;
     NSString *namespce;
-    
+    NSString *prefix;
 }
 
 @property (nonatomic, retain) NSString *name;
 @property (nonatomic, retain) NSString *value;
 @property (nonatomic, retain) NSString *namespce;
+@property (nonatomic, retain) NSString *prefix;
 
 #pragma mark - Initialization Methods
 - (id) initWithXMLElement:(CXMLElement *)recordXMLElement;

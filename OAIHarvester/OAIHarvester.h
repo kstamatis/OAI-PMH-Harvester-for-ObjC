@@ -61,12 +61,12 @@
 - (NSArray *)listSetsWithError:(NSError **)error;
 #pragma mark ListRecords
 - (NSArray *)listAllRecordsWithError:(NSError **)error;
-- (NSArray *)listRecordsWithResumptionToken:(NSString *)resumptionTkn error:(NSError **)error;
+- (NSMutableArray *)listRecordsWithResumptionToken:(NSString *)resumptionTkn error:(NSError **)error;
 - (BOOL) hasNextRecords;
 - (NSArray *) getNextRecordsWithError:(NSError **)error;
 #pragma mark ListIdentifiers
 - (NSArray *)listAllIdentifiersWithError:(NSError **)error;
-- (NSArray *)listIdentifiersWithResumptionToken:(NSString *)resumptionTkn error:(NSError **)error;
+- (NSMutableArray *)listIdentifiersWithResumptionToken:(NSString *)resumptionTkn error:(NSError **)error;
 - (BOOL) hasNextIdentifiers;
 - (NSArray *) getNextIdentifiersWithError:(NSError **)error;
 #pragma mark GetRecord

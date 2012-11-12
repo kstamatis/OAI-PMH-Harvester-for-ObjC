@@ -11,7 +11,7 @@
 
 @implementation MetadataElement
 
-@synthesize name, value, namespce;
+@synthesize name, value, namespce, prefix;
 
 #pragma mark - Initialization Methods
 - (id) initWithXMLElement:(CXMLElement *)recordXMLElement{
@@ -19,6 +19,7 @@
         self.name = recordXMLElement.localName;
         self.value = recordXMLElement.stringValue;
         self.namespce = recordXMLElement.URI;
+        self.prefix = recordXMLElement.prefix;
     }
     return self;
 }
@@ -29,6 +30,7 @@
     [name release];
     [value release];
     [namespce release];
+    [prefix release];
     
     [super dealloc];
 }

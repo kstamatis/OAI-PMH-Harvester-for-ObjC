@@ -11,15 +11,13 @@
 @interface OAIHarvester ()
 
 - (void) checkResponseForError:(CXMLElement *)oaiPmhElement withError:(NSError **)error;
-- (NSArray *)listRecordsWithResumptionToken:(NSString *)resumptionTkn fetchAll:(BOOL)fetchAll error:(NSError **)error;
-- (NSArray *)listIdentifiersWithResumptionToken:(NSString *)resumptionTkn fetchAll:(BOOL)fetchAll error:(NSError **)error;
 
 @end
 
 
 @implementation OAIHarvester
 
-@synthesize metadataPrefix, setSpec, baseURL, resumptionToken;
+@synthesize metadataPrefix, setSpec, baseURL, resumptionToken, identifiersResumptionToken, identifiers;
 @synthesize identify, metadataFormats, sets, records;
 
 #pragma mark - Initialization Methods
@@ -98,14 +96,17 @@
 }
 
 - (NSArray *)listAllRecordsWithError:(NSError **)error{
-    return [self listRecordsWithResumptionToken:nil fetchAll:YES error:error];
+    NSMutableArray *array = [self listRecordsWithResumptionToken:nil error:error];
+    
+    while (self.resumptionToken){
+        NSArray *newResults = [self listRecordsWithResumptionToken:self.resumptionToken.token error:error];
+        [array addObjectsFromArray:newResults];
+    }
+    
+    return array;
 }
 
-- (NSArray *)listRecordsWithResumptionToken:(NSString *)resumptionTkn error:(NSError **)error{
-    return [self listRecordsWithResumptionToken:resumptionTkn fetchAll:NO error:error];
-}
-
-- (NSArray *)listRecordsWithResumptionToken:(NSString *)resumptionTkn fetchAll:(BOOL)fetchAll error:(NSError **)error{
+- (NSMutableArray *)listRecordsWithResumptionToken:(NSString *)resumptionTkn error:(NSError **)error{
     
     if (!baseURL){
         *error = [HarvesterError errorWithDomain:@"harvester.client.error.nobaseurl" code:0 userInfo:nil];
@@ -177,19 +178,6 @@
                 [record release];
             }
             
-            if (fetchAll && self.resumptionToken){
-                NSArray *tmp = [self listRecordsWithResumptionToken:self.resumptionToken.token fetchAll:fetchAll error:error];
-                if (error){
-                    return nil;
-                }
-                
-                [results addObjectsFromArray:tmp];
-            }
-            
-            //if (self.records){
-            //    [self.records release];
-            //    self.records = nil;
-            //}
             self.records = results;
             
             return [results autorelease];
@@ -219,14 +207,18 @@
 }
 
 - (NSArray *)listAllIdentifiersWithError:(NSError **)error{
-    return [self listIdentifiersWithResumptionToken:nil fetchAll:YES error:error];
+    NSMutableArray *array = [self listIdentifiersWithResumptionToken:nil error:error];
+    
+    while (self.identifiersResumptionToken){
+        NSArray *newResults = [self listIdentifiersWithResumptionToken:self.identifiersResumptionToken.token error:error];
+        [array addObjectsFromArray:newResults];
+    }
+    
+    return array;
+    
 }
 
-- (NSArray *)listIdentifiersWithResumptionToken:(NSString *)resumptionTkn error:(NSError **)error{
-    return [self listIdentifiersWithResumptionToken:resumptionTkn fetchAll:NO error:error];
-}
-
-- (NSArray *)listIdentifiersWithResumptionToken:(NSString *)resumptionTkn fetchAll:(BOOL)fetchAll error:(NSError **)error{
+- (NSMutableArray *)listIdentifiersWithResumptionToken:(NSString *)resumptionTkn error:(NSError **)error{
     
     if (!baseURL){
         *error = [HarvesterError errorWithDomain:@"harvester.client.error.nobaseurl" code:0 userInfo:nil];
@@ -298,19 +290,6 @@
                 [identifier release];
             }
             
-            if (fetchAll && self.identifiersResumptionToken){
-                NSArray *tmp = [self listIdentifiersWithResumptionToken:self.identifiersResumptionToken.token fetchAll:fetchAll error:error];
-                if (error){
-                    return nil;
-                }
-                
-                [results addObjectsFromArray:tmp];
-            }
-            
-            //if (self.records){
-            //    [self.records release];
-            //    self.records = nil;
-            //}
             self.identifiers = results;
             
             return [results autorelease];
