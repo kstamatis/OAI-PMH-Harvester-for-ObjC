@@ -1,0 +1,3 @@
+[submodule "OAIHarvester/utilities/TouchXML"]
+	path = OAIHarvester/utilities/TouchXML
+	url = https://github.com/TouchCode/TouchXML.git
