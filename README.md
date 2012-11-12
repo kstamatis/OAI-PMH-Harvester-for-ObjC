@@ -9,8 +9,11 @@ The Open Archives Initiative Protocol for Metadata Harvesting (OAI-PMH) is a low
 
 Installation
 ------------
-1) Download or clone this project on your machine<br/>
-2) Copy & Paste the folder <b>OAIHarvester</b> in your project, drag the folder in your XCode project as usual<br/>
+1) Clone this project on your machine using the following command:
+
+	git clone https://github.com/kstamatis/OAI-PMH-Harvester-for-ObjC.git --recursive
+
+2) Copy & Paste the folder <b>OAIHarvester</b> in your project, drag the folder in your XCode project as usual<br/><br/>
 3) In your projects precompiled header file (.pch extension) add the following lines<br/>
 
 	#import "TouchXML.h"
@@ -25,7 +28,9 @@ Installation
 Usage
 -----------
 Instantiate a new harvester<br/>
-`OAIHarvester *harvester = [[OAIHarvester alloc] initWithBaseURL:@"PLACE THE OAI BASE URL OF YOUR REPOSITORY HERE"];`<br/>
+
+	OAIHarvester *harvester = [[OAIHarvester alloc] initWithBaseURL:@"BASE URL OF YOUR OAI HERE"];
+
 <br/>Identify instance is ready for you:<br\>
 
   	NSLog(@"repo name = %@", harvester.identify.repositoryName);
