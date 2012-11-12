@@ -1,7 +1,6 @@
 OAI-PMH-Harvester-for-ObjC
 ==========================
 
-*This is an ongoing work...*
 
 Introduction
 ------------
@@ -14,8 +13,8 @@ Installation
 2) Copy & Paste the folder <b>OAIHarvester</b> in your project, drag the folder in your XCode project as usual<br/>
 3) In your projects precompiled header file (.pch extension) add the following lines<br/>
 
-`#import "TouchXML.h"`<br/>
-`#define BASE_NAMESPACE @"http://www.openarchives.org/OAI/2.0/"`
+	#import "TouchXML.h"
+    #define BASE_NAMESPACE @"http://www.openarchives.org/OAI/2.0/"
 
 4) Enable <b>libxml2</b> library<br/>
 * In XCode, within <b>Build Settings</b>, search for <b>Header search paths</b> setting and add `/usr/include/libxml2` value to it
@@ -26,7 +25,7 @@ Installation
 Usage
 -----------
 Instantiate a new harvester<br/>
-`OAIHarvester *harvester = [[OAIHarvester alloc] initWithBaseURL:@"PLACE THE OAI BASE URL OF YOUR REPOSITORY HERE</i>"];`<br/>
+`OAIHarvester *harvester = [[OAIHarvester alloc] initWithBaseURL:@"PLACE THE OAI BASE URL OF YOUR REPOSITORY HERE"];`<br/>
 <br/>Identify instance is ready for you:<br\>
 
   	NSLog(@"repo name = %@", harvester.identify.repositoryName);
@@ -88,7 +87,7 @@ Instantiate a new harvester<br/>
 Example
 -----------
 
-A full detailed example can be found <a target="blank" href="https://github.com/kstamatis/iOS-OAI-PMH-Harvester">here</a>. It is an open-source iOS example of how to use this library in a real OAI-PMH enabled repository, the one of Serres Public Library.
+A fully detailed example can be found <a target="blank" href="https://github.com/kstamatis/iOS-OAI-PMH-Harvester">here</a>. It is an open-source iOS example of how to use this library in a real OAI-PMH enabled repository, the one of Serres Public Library.
 
 Limitations
 -----------
@@ -104,10 +103,9 @@ The only dependency of this project is the <a target="_blank" href="https://gith
 
 Author
 ------------
-
-<b>Kostas Stamatis</b><br/>
-<a target="_blank" href="http://www.ekt.gr/">National Documentation Center</a> / NHRF
+<b><a target="_blank" href="http://about.me/kstamatis">Kostas Stamatis</a></b><br/>
+<a target="_blank" href="http://www.ekt.gr/">National Documentation Center</a> / <a target="_blank" href="http://www.eie.gr/">NHRF</a>
 
 Licence
 ------------
-<a rel="license" href="http://creativecommons.org/licenses/by-sa/3.0/deed.en_US"><img alt="Creative Commons License" style="border-width:0" src="http://i.creativecommons.org/l/by-sa/3.0/88x31.png" /></a><br /><span xmlns:dct="http://purl.org/dc/terms/" property="dct:title">OAI-PMH ObjC Harvester</span> by <span xmlns:cc="http://creativecommons.org/ns#" property="cc:attributionName">Konstantinos Stamatis</span> is licensed under a <a rel="license" href="http://creativecommons.org/licenses/by-sa/3.0/deed.en_US">Creative Commons Attribution-ShareAlike 3.0 Unported License</a>.
+<a target="_blank" rel="license" href="http://creativecommons.org/licenses/by-sa/3.0/deed.en_US"><img alt="Creative Commons License" style="border-width:0" src="http://i.creativecommons.org/l/by-sa/3.0/88x31.png" /></a><br /><span xmlns:dct="http://purl.org/dc/terms/" property="dct:title">OAI-PMH ObjC Harvester</span> by <span xmlns:cc="http://creativecommons.org/ns#" property="cc:attributionName">Konstantinos Stamatis</span> is licensed under a <a rel="license" href="http://creativecommons.org/licenses/by-sa/3.0/deed.en_US">Creative Commons Attribution-ShareAlike 3.0 Unported License</a>.
