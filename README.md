@@ -2,7 +2,7 @@ OAI-PMH-Harvester-for-ObjC
 ==========================
 
 
-<b>The project is no longer supported by this repository. The newest version is supported by <a target="_blank" href="http://www.ekt.gr/">National Documentation Center</a> and you can find it <a href="https://github.com/EKT/iOS-OAI-PMH-Harvester">here</a>
+<b>The project is no longer supported by this repository. The newest version is supported by <a target="_blank" href="http://www.ekt.gr/">National Documentation Center</a> and you can find it <a href="https://github.com/EKT/OAI-PMH-Harvester-for-ObjC">here</a>
 </b>
 
 Introduction
