@@ -2,6 +2,9 @@ OAI-PMH-Harvester-for-ObjC
 ==========================
 
 
+<b>The project is no longer supported by this repository. The newest version is supported by <a target="_blank" href="http://www.ekt.gr/">National Documentation Center</a> and you can find it <a href="https://github.com/EKT/iOS-OAI-PMH-Harvester">here</a>
+</b>
+
 Introduction
 ------------
 OAI-PMH Objective-C harvester is an Objective C library/wrapper over the <a target="_blank" href="http://www.openarchives.org/OAI/openarchivesprotocol.html">OAI-PMH protocol</a>. 
